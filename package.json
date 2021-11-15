@@ -1,0 +1,22 @@
+{
+  "name": "marfatech-test",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "nuxt",
+    "build": "nuxt build",
+    "start": "nuxt start",
+    "generate": "cross-env ROOTPATH=/marfatech-test nuxt generate"
+  },
+  "dependencies": {
+    "@nuxtjs/axios": "^5.13.6",
+    "axios": "^0.24.0",
+    "core-js": "^3.15.1",
+    "cross-env": "^7.0.3",
+    "nuxt": "^2.15.7"
+  },
+  "devDependencies": {
+    "sass": "^1.43.4",
+    "sass-loader": "10.1.1"
+  }
+}

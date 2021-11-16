@@ -16,7 +16,7 @@
 
     <div class="search-field-inner-container">
       <app-loader :visible="isLoaderVisible" />
-      <app-list :visible="isListVisible" @chooseElem="chooseElem" />
+      <app-list :visible="isListVisible" @chooseElem="chooseElem" @closeList="closeList" />
     </div>
   </div>
 </template>
@@ -32,11 +32,15 @@ export default {
       isListVisible: false,
       city: "",
       searchTimeout: "",
-      isFirstSearch: true,
+      isFirstSearch: true
     };
   },
   methods: {
     async searchCity(e) {
+      if (e.keyCode == 27) {
+        return;
+      }
+
       let value = e.target.value;
       if ((value.length > 2 && this.isFirstSearch) || !this.isFirstSearch) {
         this.isFirstSearch = false;
@@ -49,8 +53,8 @@ export default {
         }
 
         let that = this;
-        await new Promise(function (resolve, reject) {
-          that.searchTimeout = setTimeout(function () {
+        await new Promise(function(resolve, reject) {
+          that.searchTimeout = setTimeout(function() {
             that.isLoaderVisible = true;
             resolve();
           }, 1000);
@@ -85,12 +89,12 @@ export default {
 
       this.isLoaderVisible = false;
       this.isListVisible = false;
-    },
+    }
   },
   components: {
     appLoader: Loader,
-    appList: List,
-  },
+    appList: List
+  }
 };
 </script>
 
@@ -110,6 +114,8 @@ export default {
 .search-field__label {
   position: relative;
   width: 100%;
+
+  z-index: 1;
 }
 
 .search-field__label-text {

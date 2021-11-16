@@ -1,3 +1,5 @@
+import Vue from "vue";
+
 class City {
     constructor(title, text, id) {
         this.title = title;
@@ -8,6 +10,7 @@ class City {
 
 export const state = () => ({
     cities: [],
+    requestObj: {}
 });
 
 export const mutations = {
@@ -44,18 +47,37 @@ export const mutations = {
                 state.cities[i].active = true;
             }
         }
+    },
+    setRequestObj(state, payload) {
+        state.requestObj[payload.key] = payload.cities;
     }
 };
 
 export const actions = {
-    async getCitiesByStr({ commit }, payload) {
+    async getCitiesByStr({ commit, getters }, payload) {
         const text = payload;
+        let cities = [];
 
-        let cities = await this.$axios.get(
-            `https://api.hh.ru/suggests/areas/?text=${text}`,
-        );
+        const requestObj = getters.requestObj;
+        const key = Vue.replaceRequestStr(text);
 
-        cities = cities.data.items;
+        if (Vue.isExistValue(requestObj[key])) {
+            cities = requestObj[key];
+        }
+        else {
+            cities = await this.$axios.get(
+                `https://api.hh.ru/suggests/areas/?text=${text}`,
+            );
+
+            cities = cities.data.items;
+
+            const obj = {
+                key,
+                cities
+            }
+
+            commit("setRequestObj", obj)
+        }
 
         commit("loadCities", cities)
     },
@@ -73,4 +95,7 @@ export const getters = {
             return getters.cities.find(city => city.id === id);
         }
     },
+    requestObj(state) {
+        return state.requestObj;
+    }
 };

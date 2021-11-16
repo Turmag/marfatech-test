@@ -2,17 +2,14 @@
   <div class="search-list-wrapper" v-show="visible">
     <div class="search-list">
       <div class="search-list-elems" v-if="elems.length > 0">
-        <app-elem
-          v-for="elem in elems"
-          :key="elem.active"
-          :elem="elem"
-          @chooseElem="chooseElem"
-        ></app-elem>
+        <app-elem v-for="elem in elems" :key="elem.active" :elem="elem" @chooseElem="chooseElem"></app-elem>
       </div>
-      <div class="search-list-elems search-list-elems--center" v-else>
-        По Вашему запросу города не найдены
-      </div>
+      <div
+        class="search-list-elems search-list-elems--center"
+        v-else
+      >По Вашему запросу города не найдены</div>
     </div>
+    <div class="search-list-back" @click="closeList"></div>
   </div>
 </template>
 
@@ -24,16 +21,27 @@ export default {
   computed: {
     elems() {
       return this.$store.getters["cities/cities"];
-    },
+    }
   },
   methods: {
     chooseElem(id) {
       this.$emit("chooseElem", id);
     },
+    closeList() {
+      this.$emit("closeList");
+    }
   },
   components: {
-    appElem: Elem,
+    appElem: Elem
   },
+  mounted() {
+    let that = this;
+    document.onkeyup = function(e) {
+      if (e.keyCode == 27) {
+        that.$emit("closeList");
+      }
+    };
+  }
 };
 </script>
 
@@ -63,6 +71,7 @@ export default {
     drop-shadow(0 3px 5px rgba(8, 0, 47, 0.04));
 
   overflow: auto;
+  z-index: 1;
 }
 
 .search-list::-webkit-scrollbar {
@@ -91,5 +100,13 @@ export default {
   text-align: center;
 
   padding: 8px;
+}
+
+.search-list-back {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
 }
 </style>
